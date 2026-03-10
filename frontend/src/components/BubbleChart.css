@@ -1,0 +1,6 @@
+.bubble text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    /* Prevents text from blocking mouse events */
+    pointer-events: none;
+}

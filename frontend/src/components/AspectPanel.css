@@ -1,0 +1,14 @@
+.left-pane {
+    gap: 0;
+    padding: 1.5rem;
+}
+
+/* Match ReviewPanel h2 styles exactly */
+.pane-header h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}

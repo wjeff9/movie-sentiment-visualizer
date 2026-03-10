@@ -1,0 +1,32 @@
+.dashboard-grid {
+    display: grid;
+    /* Dashboard layout columns */
+    grid-template-columns: 24rem 1fr 20rem;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    height: 100%;
+    /* Fill parent <main> container completely */
+    width: 100%;
+}
+
+.pane {
+    background: #24283B90;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    /* Prevent charts from bleeding out */
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-container {
+    flex: 1;
+    /* take up all remaining vertical space after the header */
+    min-height: 0;
+    /* needed for flex containers shrinking */
+}
+
+/* Center the bubble chart */
+.center-pane {
+    justify-content: center;
+    overflow-x: auto;
+}
