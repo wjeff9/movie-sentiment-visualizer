@@ -18,7 +18,9 @@ export function useDashboardData() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/data/triplets.json');
+                // Use Vite's BASE_URL to construct the correct path for GitHub Pages
+                const basePath = import.meta.env.BASE_URL;
+                const response = await fetch(`${basePath}data/triplets.json`);
                 const rawData = await response.json();
                 setData(rawData);
             } catch (error) {

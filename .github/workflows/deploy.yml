@@ -1,5 +1,8 @@
 name: Deploy static content to Pages
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches: ['main'] # Adjust this if your default branch is 'master'
