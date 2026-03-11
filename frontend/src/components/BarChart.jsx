@@ -36,6 +36,7 @@ export default function BarChart({ data, labels, dataKey = 'aspect', width, heig
                         xScale={xScale}
                         yScale={yScale}
                         innerWidth={innerWidth}
+                        margin={margin}
                         colors={colors}
                         barRadius={barRadius}
                         selectedBar={selectedBar}
@@ -65,7 +66,7 @@ function Axis({ scale, orient, transform }) {
     useEffect(() => {
         // Decide which D3 axis generator to use
         const axisGenerator = orient === 'left' ? d3.axisLeft : d3.axisBottom
-        const axis = axisGenerator(scale).ticks(4);
+        const axis = axisGenerator(scale).ticks(5);
 
         d3.select(axisRef.current).call(axis);
     }, [scale, orient])
@@ -74,7 +75,7 @@ function Axis({ scale, orient, transform }) {
 }
 
 
-function Bars({ data, dataKey, xScale, yScale, innerWidth, colors, barRadius, selectedBar, onSelect, setTooltip }) {
+function Bars({ data, dataKey, xScale, yScale, innerWidth, margin, colors, barRadius, selectedBar, onSelect, setTooltip }) {
     // Prepare stacked data
     const stackedRects = useMemo(() => {
         // Prevents D3 from stacking undefined data
@@ -98,6 +99,7 @@ function Bars({ data, dataKey, xScale, yScale, innerWidth, colors, barRadius, se
                     xScale={xScale}
                     yScale={yScale}
                     innerWidth={innerWidth}
+                    margin={margin}
                     colors={colors}
                     barRadius={barRadius}
                     gradientId='bar-glow'
@@ -111,7 +113,7 @@ function Bars({ data, dataKey, xScale, yScale, innerWidth, colors, barRadius, se
 }
 
 
-function BarComplete({ posRect, negRect, aspect, xScale, yScale, innerWidth, colors, barRadius, gradientId, isSelected, onSelect, setTooltip }) {
+function BarComplete({ posRect, negRect, aspect, xScale, yScale, innerWidth, margin, colors, barRadius, gradientId, isSelected, onSelect, setTooltip }) {
     const [isHovered, setIsHovered] = useState(false);
 
     // Tooltip content
@@ -156,14 +158,13 @@ function BarComplete({ posRect, negRect, aspect, xScale, yScale, innerWidth, col
             style={{ cursor: 'pointer' }}
         >
             <BarHitbox
-                x={0}
-                y={yScale(aspect)}
-                width={innerWidth}
-                height={yScale.bandwidth()}
+                x={-margin.left}
+                y={yScale(aspect) - (yScale.step() - yScale.bandwidth()) / 2}
+                width={innerWidth + margin.left}
+                height={yScale.step()}
                 borderRadius={barRadius}
                 isHovered={isHovered}
                 isSelected={isSelected}
-                gradientId={gradientId}
             />
             <BarSegment
                 key={`${aspect}-positive`}
@@ -173,7 +174,7 @@ function BarComplete({ posRect, negRect, aspect, xScale, yScale, innerWidth, col
                 height={yScale.bandwidth()}
                 fill={isSelected ? "url(#bar-gradient-positive)" : colors.default.positive}
                 stroke={isSelected ? colors.selected.positive : colors.default.positive}
-                opacity={isHovered ? 1 : 0.5}
+                opacity={isHovered ? 1 : 0.35}
                 barRadius={barRadius}
             />
             <BarSegment
@@ -184,7 +185,7 @@ function BarComplete({ posRect, negRect, aspect, xScale, yScale, innerWidth, col
                 height={yScale.bandwidth()}
                 fill={isSelected ? "url(#bar-gradient-negative)" : colors.default.negative}
                 stroke={isSelected ? colors.selected.negative : colors.default.negative}
-                opacity={isHovered ? 1 : 0.5}
+                opacity={isHovered ? 1 : 0.35}
                 barRadius={barRadius}
             />
         </g>
@@ -206,7 +207,7 @@ function BarSegment({ x, y, width, height, fill, stroke, opacity = 0.5, barRadiu
     )
 }
 
-function BarHitbox({ x, y, width, height, borderRadius, isHovered, isSelected, gradientId }) {
+function BarHitbox({ x, y, width, height, borderRadius, isHovered, isSelected }) {
     return (
         <rect
             x={x}

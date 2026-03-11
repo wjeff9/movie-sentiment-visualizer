@@ -44,7 +44,7 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
 
         const simulation = d3.forceSimulation(nodes)
             // Pulls bubbles toward their sentiment "home" (Positive up, Negative down)
-            .force('xCenter', d3.forceX(width / 2).strength(0.5))
+            .force('xCenter', d3.forceX(width / 2).strength(1))
             .force('yCenter', d3.forceY(height / 2).strength(2))
             // Larger bubbles should be closer to the ends
             .force('ySentiment', d3.forceY(d => d.sentiment === 'positive' ? 0 : height).strength(d => 1.5 * d.count))
@@ -131,7 +131,7 @@ function Bubble({ x, y, radius, text, selectionColor, sentimentColor, isSelected
             <circle
                 r={radius}
                 fill={isSelected ? selectionColor : sentimentColor}
-                fillOpacity={isHovered ? 1 : 0.5}
+                fillOpacity={isHovered ? 1 : 0.35}
                 stroke={isHovered && isSelected ? selectionColor : sentimentColor}
                 onClick={onClick}
             />
