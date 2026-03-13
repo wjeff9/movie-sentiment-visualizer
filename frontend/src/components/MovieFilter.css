@@ -1,0 +1,25 @@
+.movie-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #24283B90;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #414868;
+}
+
+.movie-select-dropdown {
+    background: transparent;
+    border: none;
+    color: #C0CAF5;
+    font-size: 1rem;
+    font-weight: 400;
+    cursor: pointer;
+    outline: none;
+    padding-right: 0.5rem;
+}
+
+.movie-select-dropdown option {
+    background: #1A1B26;
+    color: #C0CAF5;
+}

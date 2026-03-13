@@ -16,8 +16,8 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
         const maxCount = d3.max(data, d => d.count);
         const totalCount = d3.sum(data, d => d.count);
 
-        // Target 40% of the SVG area to prevent crowding
-        const targetArea = width * height * 0.6;
+        // Target % of the SVG area to prevent crowding
+        const targetArea = width * height * 0.67;
 
         // Calculate scaling factor 'k' so sum(pi * r^2) = targetArea
         let k = Math.sqrt(targetArea / (Math.PI * totalCount));
@@ -30,9 +30,9 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
 
         return data.map(d => ({
             ...d,
-            radius: Math.max(16, k * Math.sqrt(d.count)), // Guarantee at least 16px for text legibility
-            x: width / 2 + (Math.random() - 0.5) * 10, // Small scatter to prevent infinite collision calculations
-            y: height / 2 + (Math.random() - 0.5) * 10
+            radius: Math.max(10, k * Math.sqrt(d.count)), // Guarantee at least 10px for text legibility
+            x: width / 2 + (Math.random() - 0.5) * 50, // Small scatter to prevent infinite collision calculations
+            y: height / 2 + (Math.random() - 0.5) * 50
         }))
     }, [data, width, height])
 
@@ -44,15 +44,15 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
 
         const simulation = d3.forceSimulation(nodes)
             // Pulls bubbles toward their sentiment "home" (Positive up, Negative down)
-            .force('xCenter', d3.forceX(width / 2).strength(1))
-            .force('yCenter', d3.forceY(height / 2).strength(2))
+            .force('xCenter', d3.forceX(width / 2).strength(0.08))
+            .force('yCenter', d3.forceY(height / 2).strength(0.4))
             // Larger bubbles should be closer to the ends
-            .force('ySentiment', d3.forceY(d => d.sentiment === 'positive' ? 0 : height).strength(d => 1.5 * d.count))
+            .force('ySentiment', d3.forceY(d => d.sentiment === 'positive' ? 0 : height).strength(d => 0.05 * d.count))
             // Prevents bubbles from overlapping
-            .force('collide', d3.forceCollide(d => d.radius).iterations(2))
+            .force('collide', d3.forceCollide(d => d.radius).strength(0.6))
             // Subtle push so they aren't totally jammed together
-            .force('charge', d3.forceManyBody().strength(-20)) // Reduced from -80 to prevent extreme scattering
-            .velocityDecay(0.6) // Adds "friction" (default 0.4) so they don't teleport outward instantly
+            .force('charge', d3.forceManyBody().strength(-45)) // Reduced from -80 to prevent extreme scattering
+            .velocityDecay(0.5) // Adds "friction" (default 0.4) so they don't teleport outward instantly
             .on('tick', () => {
                 const padding = 1; // Keep them slightly off the true edge
                 nodes.forEach(d => {
@@ -61,8 +61,8 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
                 });
                 setBubbles([...nodes]);
             })
-            .alpha(0.01)       // Initial heat
-            .alphaDecay(0.005); // Cool down
+            .alpha(1)       // Initial heat
+            .alphaDecay(0.02); // Cool down
 
         return () => simulation.stop(); // Cleanup: stop simulation when component unmounts or data changes
     }, [nodeData, width, height]);
@@ -132,17 +132,32 @@ function Bubble({ x, y, radius, text, selectionColor, sentimentColor, isSelected
                 r={radius}
                 fill={isSelected ? selectionColor : sentimentColor}
                 fillOpacity={isHovered ? 1 : 0.35}
-                stroke={isHovered && isSelected ? selectionColor : sentimentColor}
+                stroke={isSelected ? selectionColor : sentimentColor}
                 onClick={onClick}
             />
             <text
                 textAnchor='middle'
-                dominantBaseline='central'
                 style={{ fontSize: radius / 3 }}
-                fill={isHovered || !isSelected ? '#fff' : sentimentColor}
+                fill={isHovered ? '#24283B' : '#C0CAF5'}
             >
-                {text}
+                <MultilineText text={text} />
             </text>
         </g >
     );
+}
+
+function MultilineText({ text, lineHeight = 1.1 }) {
+    // Split on space or hyphen (removes the character)
+    const words = text.split(/[ -]/);
+    const startOffset = -(words.length - 1) * (lineHeight / 2);
+
+    return words.map((word, i) => (
+        <tspan
+            key={i}
+            x="0"
+            dy={i === 0 ? `${startOffset + 0.3}em` : `${lineHeight}em`}
+        >
+            {word.toLowerCase()}
+        </tspan>
+    ));
 }

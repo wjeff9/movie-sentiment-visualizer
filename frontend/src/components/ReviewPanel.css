@@ -9,8 +9,8 @@
     margin-top: 0;
     margin-bottom: 1.5rem;
     font-size: 1.25rem;
-    color: #fff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #C0CAF5;
+    border-bottom: 1px solid #414868;
     padding-bottom: 0.5rem;
 }
 
@@ -23,15 +23,15 @@
 }
 
 .placeholder {
-    color: rgba(255, 255, 255, 0.4);
-    font-style: regular;
+    color: #565F89;
+    /* font-style: regular; */
     text-align: center;
     margin-top: 2rem;
 }
 
 .review-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #24283B;
+    /* border: 1px solid #414868; */
     border-radius: 0.75rem;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -45,13 +45,18 @@
     line-height: 1.6;
     /* Makes longer reviews much easier to read */
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #C0CAF5;
     font-style: regular;
 }
 
-.highlight {
+.highlight-opinion {
     font-weight: 700;
     border-radius: 0.25rem;
+}
+
+.highlight-aspect {
+    font-weight: 700;
+    color: #BB9AF7;
 }
 
 .review-footer {
@@ -60,16 +65,17 @@
     align-items: center;
     margin-top: 0.75rem;
     padding-top: 0.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #414868;
 }
 
 .reviewer-name {
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.9rem;
+    color: #565F89;
+    font-size: 0.8rem;
+    font-weight: 700;
 }
 
 .review-date {
-    color: rgba(255, 255, 255, 0.5);
+    color: #565F89;
     font-size: 0.8rem;
+    font-weight: 700;
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { getSentimentCountsByAspect, getSentimentCountsByOpinion } from '../utils/dataHandlers';
+import { getSentimentCountsByAspect, getSentimentCountsByOpinion, titleCase } from '../utils/dataHandlers';
 
 /**
  * useDashboardData: Orchestrates the data layer for the Sentiment Dashboard.
@@ -10,6 +10,7 @@ import { getSentimentCountsByAspect, getSentimentCountsByOpinion } from '../util
  */
 export function useDashboardData() {
     const [data, setData] = useState([]);
+    const [activeMovie, setActiveMovie] = useState(null);
     const [activeNode, setActiveNode] = useState(null);
     const [activeAspect, setActiveAspect] = useState(null);
     const [activeSubaspect, setActiveSubaspect] = useState(null);
@@ -22,7 +23,16 @@ export function useDashboardData() {
                 const basePath = import.meta.env.BASE_URL;
                 const response = await fetch(`${basePath}data/triplets.json`);
                 const rawData = await response.json();
-                setData(rawData);
+
+                // Title case data immediately after fetching
+                const normalizedData = rawData.map(d => ({
+                    ...d,
+                    aspect: titleCase(d.aspect),
+                    subaspect: titleCase(d.subaspect)
+                }));
+
+                setData(normalizedData);
+                normalizedData.length > 0 ? setActiveMovie(normalizedData[0].title) : setActiveMovie(null);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
             }
@@ -30,38 +40,44 @@ export function useDashboardData() {
         fetchData();
     }, []);
 
+    // List of movie titles for drop down
+    const movieTitles = useMemo(() => {
+        return [...new Set(data.map(d => d.title))].sort();  // Set removes duplicates
+    }, [data])
+
+    // Data filtered by active movie
+    const movieData = useMemo(() => {
+        return activeMovie ? data.filter(d => d.title === activeMovie) : data;
+    }, [data, activeMovie])
+
     // Memoize processed data to ensure referential stability
     // This stops the BubbleChart simulation from restarting on every state update
     const opinionData = useMemo(() => {
-        let filteredData = data;
+        let filteredData = movieData;
         if (activeSubaspect) {
-            filteredData = data.filter(d => d.subaspect === activeSubaspect);
+            filteredData = movieData.filter(d => d.subaspect === activeSubaspect);
         } else if (activeAspect) {
-            filteredData = data.filter(d => d.aspect === activeAspect);
+            filteredData = movieData.filter(d => d.aspect === activeAspect);
         }
         return getSentimentCountsByOpinion(filteredData);
-    }, [data, activeAspect, activeSubaspect]);
+    }, [movieData, activeAspect, activeSubaspect]);
 
-    const aspectData = useMemo(() => getSentimentCountsByAspect(data, 'aspect'), [data]);
+    const aspectData = useMemo(() => getSentimentCountsByAspect(movieData, 'aspect'), [movieData]);
     const aspectLabels = useMemo(() => aspectData.map(d => d.aspect), [aspectData]);
 
     const subaspectData = useMemo(() => {
         const isAspectSelected = activeAspect !== null;
-        const filteredData = data
-            // Don't display the "verdict" subaspect because it's just a placeholder for the "verdict" aspect, which has no subaspects
-            .filter(d => d.subaspect && d.subaspect?.toLowerCase() !== 'verdict')
+        const filteredData = movieData
+            .filter(d => d.aspect.toLowerCase() !== 'general')
             .filter(d => isAspectSelected ? d.aspect === activeAspect : true);
 
         return getSentimentCountsByAspect(filteredData, 'subaspect');
-    }, [data, activeAspect]);
+    }, [movieData, activeAspect]);
 
     const totalSubaspectLabels = useMemo(() => {
-        const filteredData = data
-            .filter(d => d.subaspect && d.subaspect?.toLowerCase() !== 'verdict')
-
-        const sortedData = getSentimentCountsByAspect(filteredData, 'subaspect');
+        const sortedData = getSentimentCountsByAspect(movieData, 'subaspect');
         return sortedData.map(d => d.subaspect);
-    }, [data]);
+    }, [movieData]);
 
     const subaspectLabels = useMemo(() => {
         const activeSubaspects = new Set(subaspectData.map(d => d.subaspect));
@@ -69,6 +85,13 @@ export function useDashboardData() {
     }, [totalSubaspectLabels, subaspectData]);
 
     // Selection Handlers
+    const handleSelectMovie = useCallback((movieTitle) => {
+        setActiveMovie(movieTitle);
+        setActiveAspect(null);
+        setActiveSubaspect(null);
+        setActiveNode(null);
+    })
+
     const handleSelectBubble = useCallback((node) => {
         // Toggle selection off if clicking the already selected bar
         setActiveNode(prev => prev?.id === node.id ? null : node);
@@ -87,6 +110,9 @@ export function useDashboardData() {
 
     return {
         data,
+        activeMovie,
+        movieTitles,
+        handleSelectMovie,
         opinionData,
         aspectData,
         aspectLabels,

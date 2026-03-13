@@ -1,11 +1,21 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 .dashboard-grid {
     display: grid;
     /* Dashboard layout columns */
     grid-template-columns: 24rem 1fr 20rem;
     gap: 1.25rem;
     padding: 1.25rem;
-    height: 100%;
-    /* Fill parent <main> container completely */
+    flex: 1;
+    /* Match remaining height after header */
+    min-height: 0;
+    /* Critical for flex items to shrink/fit */
     width: 100%;
 }
 
@@ -29,4 +39,12 @@
 .center-pane {
     justify-content: center;
     overflow-x: auto;
+}
+
+/* Dashboard Header & Filter */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem 0.5rem 1.25rem;
 }

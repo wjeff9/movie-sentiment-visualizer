@@ -29,7 +29,7 @@ export default function BarChart({ data, labels, dataKey = 'aspect', width, heig
         <>
             <svg width={width} height={height}>
                 <g transform={`translate(${margin.left}, ${margin.top})`}>
-                    <Axes xScale={xScale} yScale={yScale} innerHeight={innerHeight} />
+                    <Axes xScale={xScale} yScale={yScale} innerHeight={innerHeight} innerWidth={innerWidth} />
                     <Bars
                         data={data}
                         dataKey={dataKey}
@@ -50,26 +50,31 @@ export default function BarChart({ data, labels, dataKey = 'aspect', width, heig
 }
 
 
-function Axes({ xScale, yScale, innerHeight }) {
+function Axes({ xScale, yScale, innerHeight, innerWidth }) {
     return (
         <g className='axes'>
-            <Axis scale={xScale} orient='bottom' transform={`translate(0, ${innerHeight})`} />
-            <Axis scale={yScale} orient='left' />
+            {/* Top border line to "close" the chart rectangle */}
+            <line x1={0} y1={0} x2={innerWidth} y2={0} stroke="#414868" style={{ opacity: 1 }} />
+            <Axis scale={xScale} orient='bottom' transform={`translate(0, ${innerHeight})`} tickSize={-innerHeight} />
+            <Axis scale={yScale} orient='left' tickSize={0} />
         </g>
     )
 }
 
 
-function Axis({ scale, orient, transform }) {
+function Axis({ scale, orient, transform, tickSize = 6, tickPadding = 6 }) {
     const axisRef = useRef(null);
 
     useEffect(() => {
         // Decide which D3 axis generator to use
         const axisGenerator = orient === 'left' ? d3.axisLeft : d3.axisBottom
-        const axis = axisGenerator(scale).ticks(5);
+        const axis = axisGenerator(scale)
+            .ticks(5)
+            .tickSize(tickSize)
+            .tickPadding(tickPadding);
 
         d3.select(axisRef.current).call(axis);
-    }, [scale, orient])
+    }, [scale, orient, tickSize, tickPadding])
 
     return <g className='axis' ref={axisRef} transform={transform} />
 }
@@ -214,9 +219,9 @@ function BarHitbox({ x, y, width, height, borderRadius, isHovered, isSelected })
             y={y}
             width={width}
             height={height}
-            fill={isSelected ? 'transparent' : "#fff"}
+            fill="#C0CAF5"
             rx={borderRadius}
-            opacity={isSelected ? 1 : (isHovered ? 0.05 : 0)}
+            opacity={isHovered ? 0.1 : 0}
         />
     )
 }

@@ -63,9 +63,9 @@ export function getSentimentCountsByOpinion(data) {
 
         // Keep array of relevant review data to avoid searching later
         const reviewData = {
-            text: triplet.original_text,
+            text: triplet.highlightedReview,
             reviewer: triplet.criticName,
-            date: triplet.date || 'Jan 1, 2024' // Placeholder for future data
+            date: triplet.reviewDate
         }
         acc[key].reviews.push(reviewData);
 
@@ -73,4 +73,9 @@ export function getSentimentCountsByOpinion(data) {
     }, {});
 
     return Object.values(grouped);
+}
+
+export function titleCase(str) {
+    if (!str) return str;
+    return str.toLowerCase().replace(/(?:^|\s|[(\-])[a-z]/g, (match) => match.toUpperCase());
 }

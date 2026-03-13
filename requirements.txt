@@ -1,0 +1,5 @@
+google-genai
+kagglehub
+pandas
+pysbd
+python-dotenv

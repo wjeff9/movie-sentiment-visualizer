@@ -1,1 +1,20 @@
-/* BarChart specific styles go here */
+/* BarChart specific styles */
+.axis path,
+.axis line {
+    stroke: #414868;
+}
+
+.axis text {
+    fill: #C0CAF5;
+    font-size: 0.6rem;
+}
+
+/* Specific styling for the Y axis categories */
+.axis.left text {
+    font-weight: 400;
+}
+
+/* Bars and other chart elements */
+.bar rect {
+    transition: fill-opacity 0.2s;
+}
