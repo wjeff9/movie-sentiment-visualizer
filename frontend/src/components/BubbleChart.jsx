@@ -105,7 +105,7 @@ function Bubble({ x, y, radius, text, selectionColor, sentimentColor, isSelected
                 y: e.clientY,
                 content: (
                     <>
-                        <h4>"{node.opinion}"</h4>
+                        <h4>{node.opinion}</h4>
                         {/* <p>Sentiment <strong style={{ color: sentimentColor, textTransform: 'capitalize' }}>{node.sentiment}</strong></p> */}
                         <p>Total Mentions <strong>{node.count}</strong></p>
                     </>
