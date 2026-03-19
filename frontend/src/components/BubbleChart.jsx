@@ -44,15 +44,15 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
 
         const simulation = d3.forceSimulation(nodes)
             // Pulls bubbles toward their sentiment "home" (Positive up, Negative down)
-            .force('xCenter', d3.forceX(width / 2).strength(0.08))
-            .force('yCenter', d3.forceY(height / 2).strength(0.4))
+            .force('xCenter', d3.forceX(width / 2).strength(0.1))
+            .force('yCenter', d3.forceY(height / 2).strength(0.45))
             // Larger bubbles should be closer to the ends
             .force('ySentiment', d3.forceY(d => d.sentiment === 'positive' ? 0 : height).strength(d => 0.05 * d.count))
             // Prevents bubbles from overlapping
-            .force('collide', d3.forceCollide(d => d.radius).strength(0.6))
+            .force('collide', d3.forceCollide(d => d.radius).strength(0.7))
             // Subtle push so they aren't totally jammed together
-            .force('charge', d3.forceManyBody().strength(-45)) // Reduced from -80 to prevent extreme scattering
-            .velocityDecay(0.5) // Adds "friction" (default 0.4) so they don't teleport outward instantly
+            .force('charge', d3.forceManyBody().strength(-70))
+            .velocityDecay(0.525) // Adds "friction" (default 0.4) so they don't teleport outward instantly
             .on('tick', () => {
                 const padding = 1; // Keep them slightly off the true edge
                 nodes.forEach(d => {
@@ -62,7 +62,8 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
                 setBubbles([...nodes]);
             })
             .alpha(1)       // Initial heat
-            .alphaDecay(0.02); // Cool down
+            .alphaDecay(0.03) // Cool down
+            .alphaTarget(0.01);
 
         return () => simulation.stop(); // Cleanup: stop simulation when component unmounts or data changes
     }, [nodeData, width, height]);
