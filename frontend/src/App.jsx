@@ -17,7 +17,7 @@ function App() {
     <div className='app-container'>
       <SVGDefs colors={colors} />
       <header>
-        <h1>Movie Review Sentiment</h1>
+        <h1>Film Critique Sentiment</h1>
         <MovieFilter
           movies={dashboard.movieTitles}
           activeMovie={dashboard.activeMovie}

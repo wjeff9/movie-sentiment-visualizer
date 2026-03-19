@@ -165,7 +165,7 @@ function BarComplete({ posRect, negRect, aspect, xScale, yScale, innerWidth, mar
             <BarHitbox
                 x={-margin.left}
                 y={yScale(aspect) - (yScale.step() - yScale.bandwidth()) / 2}
-                width={innerWidth + margin.left}
+                width={innerWidth + margin.left + margin.right}
                 height={yScale.step()}
                 borderRadius={barRadius}
                 isHovered={isHovered}
