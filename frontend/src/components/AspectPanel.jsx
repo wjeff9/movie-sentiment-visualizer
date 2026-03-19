@@ -17,7 +17,7 @@ export default function AspectPanel({
     setTooltip
 }) {
     const [chartRef, chartDims] = useChartDimensions();
-    const chartMargins = { top: 25, right: 0, bottom: 50, left: 100 };
+    const chartMargins = { top: 20, right: 10, bottom: 40, left: 100 };
     const gap = 20; // 1.25rem from Dashboard.css
 
     // Calculate proportional heights so both charts share exact same bar bandwidth
