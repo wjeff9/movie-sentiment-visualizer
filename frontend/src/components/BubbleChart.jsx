@@ -62,8 +62,8 @@ export default function BubbleChart({ data, colors, selectedBubble = null, onSel
                 setBubbles([...nodes]);
             })
             .alpha(1)  // Initial heat
-            .alphaDecay(0.03)  // Cool down
-            .alphaTarget(0.01);
+            .alphaDecay(0.025)  // Cool down
+            .alphaTarget(0);
 
         return () => simulation.stop(); // Cleanup: stop simulation when component unmounts or data changes
     }, [nodeData, width, height]);
